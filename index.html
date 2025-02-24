@@ -44,8 +44,6 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
             transform: translateY(0);
             transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
         }
 
         .container:hover {
@@ -63,27 +61,6 @@
             font-size: 1.2em;
             margin-bottom: 20px;
             line-height: 1.6;
-        }
-
-        .moving-button {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 15px 30px;
-            font-size: 1.2em;
-            color: white;
-            border-radius: 30px;
-            cursor: pointer;
-            margin: 10px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-
-        .moving-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         }
 
         button {
@@ -114,7 +91,6 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
             animation: floatAndFade 3s ease-in-out;
             pointer-events: none;
-            z-index: 1000;
         }
 
         @keyframes floatAndFade {
@@ -154,6 +130,7 @@
             transform: scale(1.05);
         }
 
+        /* Add floating hearts background */
         .hearts {
             position: fixed;
             top: 0;
@@ -176,37 +153,14 @@
             50% { opacity: 0.5; }
             100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
         }
-
-        #chase-area {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 999;
-        }
-
-        .clicks-remaining {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            font-size: 1.2em;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 15px;
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-        }
     </style>
 </head>
 <body>
-    <div id="chase-area"></div>
-    <div class="clicks-remaining">Clicks remaining: <span id="clicks-counter">10</span></div>
     <div class="hearts"></div>
     <div class="container">
         <h1>Untuk Yoi 💬</h1>
-        <p>Cuba tangkap button! 💖</p>
-        <button id="moving-btn" class="moving-button">💬 Tekan sini 10 💬</button>
+        <p>Tekan button untuk suprise! 💖</p>
+        <button onclick="confirmCompliment()">💬 Tekan sini 10 💬</button>
         <button id="reveal-button" onclick="revealMessage()" style="display: none;">💌 Surat untuk yang teristimewa 💌</button>
         <p id="secret-message" class="hidden-message">Sebenarnya, saya suka awak, dari awal kita kenal sampai sekarang ❤️</p>
         <div id="gif-container" class="gif-container">
@@ -237,30 +191,6 @@
 
         let complimentCount = 0;
         let firstClick = true;
-        const movingBtn = document.getElementById('moving-btn');
-        const clicksCounter = document.getElementById('clicks-counter');
-        const chaseArea = document.getElementById('chase-area');
-
-        function moveButton() {
-            const maxX = window.innerWidth - movingBtn.offsetWidth;
-            const maxY = window.innerHeight - movingBtn.offsetHeight;
-            
-            const newX = Math.random() * maxX;
-            const newY = Math.random() * maxY;
-            
-            movingBtn.style.left = `${newX}px`;
-            movingBtn.style.top = `${newY}px`;
-        }
-
-        // Initialize button position
-        moveButton();
-
-        // Move button on hover
-        movingBtn.addEventListener('mouseover', () => {
-            if (complimentCount < 10) {
-                moveButton();
-            }
-        });
 
         // Create floating hearts
         function createHearts() {
@@ -276,12 +206,20 @@
 
         setInterval(createHearts, 300);
 
-        movingBtn.addEventListener('click', () => {
-            showCompliment();
-            if (complimentCount < 10) {
-                moveButton();
+        function confirmCompliment() {
+            if(firstClick) {
+                if (confirm("Betul ke ni? 💖")) {
+                    if(confirm("Yakin ke ni?")) {
+                        if(confirm("Betul eh?")) {
+                            firstClick = false;
+                            showCompliment();
+                        }
+                    }
+                }
+            } else {
+                showCompliment();
             }
-        });
+        }
 
         function showCompliment() {
             const randomCompliment = compliments[Math.floor(Math.random() * compliments.length)];
@@ -302,20 +240,14 @@
             document.getElementById("gif-container").style.display = "block";
             
             complimentCount++;
-            clicksCounter.textContent = 10 - complimentCount;
-            
             if (complimentCount >= 10) {
                 document.getElementById("reveal-button").style.display = "inline-block";
-                movingBtn.style.display = "none";
             }
         }
 
         function revealMessage() {
             document.getElementById("secret-message").style.display = "block";
         }
-
-        // Prevent button from getting stuck at edges
-        window.addEventListener('resize', moveButton);
     </script>
 </body>
 </html>
