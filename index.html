@@ -6,65 +6,157 @@
     <title>Buka Bila Perlu 💬</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
             color: #fff;
             text-align: center;
-            padding: 50px;
-            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
+            position: relative;
         }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .container {
             max-width: 600px;
-            margin: auto;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transform: translateY(0);
+            transition: all 0.3s ease;
         }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.47);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
         button {
-            background: #ff758c;
-            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             padding: 15px 30px;
-            font-size: 1.5em;
+            font-size: 1.2em;
             color: white;
-            border-radius: 10px;
+            border-radius: 30px;
             cursor: pointer;
             margin: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
+
         button:hover {
-            background: #ff5e6c;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         }
+
         .compliment {
             position: absolute;
             font-size: 1.5em;
             font-weight: bold;
             color: #fff;
-            animation: fadeOut 3s ease-in-out;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: floatAndFade 3s ease-in-out;
+            pointer-events: none;
         }
+
+        @keyframes floatAndFade {
+            0% { transform: translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+
         .hidden-message {
             display: none;
             font-size: 1.5em;
             font-weight: bold;
             margin-top: 20px;
             color: white;
+            animation: glow 2s ease-in-out infinite alternate;
         }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #e60073; }
+            to { text-shadow: 0 0 10px #fff, 0 0 20px #ff4da6, 0 0 30px #ff4da6; }
+        }
+
         .gif-container {
             margin-top: 20px;
             display: none;
         }
+
         .gif-container img {
             width: 200px;
-            border-radius: 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
         }
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
+
+        .gif-container img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Add floating hearts background */
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float 6s ease-in infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
         }
     </style>
 </head>
 <body>
+    <div class="hearts"></div>
     <div class="container">
         <h1>Untuk Yoi 💬</h1>
         <p>Tekan button untuk suprise! 💖</p>
@@ -98,19 +190,33 @@
         ];
 
         let complimentCount = 0;
-        let firstClick=true
+        let firstClick = true;
+
+        // Create floating hearts
+        function createHearts() {
+            const heartsContainer = document.querySelector('.hearts');
+            const heart = document.createElement('span');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            heartsContainer.appendChild(heart);
+            setTimeout(() => heart.remove(), 6000);
+        }
+
+        setInterval(createHearts, 300);
 
         function confirmCompliment() {
-            if(firstClick){
+            if(firstClick) {
                 if (confirm("Betul ke ni? 💖")) {
-                    if(confirm("Yakin ke ni?")){
-                        if(confirm("Betul eh?")){
-                            firstClick=false
+                    if(confirm("Yakin ke ni?")) {
+                        if(confirm("Betul eh?")) {
+                            firstClick = false;
                             showCompliment();
                         }
                     }
                 }
-            } else{
+            } else {
                 showCompliment();
             }
         }
