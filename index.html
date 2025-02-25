@@ -1,30 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Previous head section remains the same -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buka Bila Perlu 💬</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Previous styles remain the same until envelope-front */
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background: linear-gradient(-45deg, #ff758c, #ff7eb3, #ff7eb3, #ff8fa3);
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
             color: #fff;
             text-align: center;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            padding: 50px;
             position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            margin: 0;
         }
 
         @keyframes gradient {
@@ -35,85 +30,149 @@
 
         .container {
             max-width: 600px;
-            margin: 20px;
-            background: rgba(255, 255, 255, 0.1);
+            margin: auto;
+            background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(10px);
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            transform: translateY(0);
-            transition: all 0.3s ease;
-        }
-
-        .container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.47);
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        p {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            line-height: 1.6;
+            box-shadow: 0 8px 32px rgba(255, 119, 140, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         button {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: linear-gradient(45deg, #ff5e7d, #ff7eb3);
+            border: none;
             padding: 15px 30px;
-            font-size: 1.2em;
+            font-size: 1.5em;
             color: white;
-            border-radius: 30px;
+            border-radius: 15px;
             cursor: pointer;
             margin: 10px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 94, 124, 0.3);
         }
 
         button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 94, 124, 0.4);
         }
 
-        .compliment {
-            position: absolute;
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            animation: floatAndFade 3s ease-in-out;
-            pointer-events: none;
-        }
-
-        @keyframes floatAndFade {
-            0% { transform: translateY(0); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100px); opacity: 0; }
-        }
-
-        .hidden-message {
+        .envelope-wrapper {
             display: none;
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-top: 20px;
+            perspective: 1000px;
+            margin-top: 30px;
+        }
+
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            transition: transform 1s;
+            cursor: pointer;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .envelope:hover {
+            animation-play-state: paused;
+        }
+
+        .envelope.open {
+            transform: rotateX(180deg);
+            animation: none;
+        }
+
+        .envelope-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ff7eb3;
+            border-radius: 10px;
+            transform-origin: bottom;
+            transition: transform 0.6s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            backface-visibility: hidden;
+        }
+
+        .click-hint {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            bottom: -30px;
+            font-size: 0.9em;
             color: white;
-            animation: glow 2s ease-in-out infinite alternate;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        @keyframes glow {
-            from { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #e60073; }
-            to { text-shadow: 0 0 10px #fff, 0 0 20px #ff4da6, 0 0 30px #ff4da6; }
+        .envelope:hover .click-hint {
+            opacity: 1;
         }
 
+        .envelope.open .envelope-front {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ff5e7d;
+            border-radius: 10px;
+            transform: rotateX(180deg);
+            backface-visibility: hidden;
+        }
+
+        .letter {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #ff5e7d;
+            font-size: 1.2em;
+            transform: translateY(-100%) rotateX(180deg);
+            opacity: 0;
+            transition: all 0.6s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .envelope.open .letter {
+            transform: translateY(5%) rotateX(180deg);
+            opacity: 1;
+            transition-delay: 0.6s;
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: #ff8fa3;
+            clip-path: polygon(0 0, 50% 50%, 100% 0);
+            transform-origin: top;
+            transition: transform 0.6s;
+        }
+
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+        }
+
+        /* Rest of the previous styles remain the same */
         .gif-container {
             margin-top: 20px;
             display: none;
@@ -123,52 +182,84 @@
             width: 200px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
         }
 
-        .gif-container img:hover {
-            transform: scale(1.05);
-        }
-
-        /* Add floating hearts background */
-        .hearts {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .heart {
+        .compliment {
             position: absolute;
-            font-size: 20px;
-            animation: float 6s ease-in infinite;
-            opacity: 0.5;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+            animation: fadeOut 3s ease-in-out;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        @keyframes float {
-            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.2em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0; transform: scale(1); }
+        }
+        @media screen and (max-width: 600px) {
+            .envelope {
+                width: 80vw;
+                height: 150px;
+            }
+
+            .envelope-front, .envelope-back {
+                width: 100%;
+                height: 100%;
+            }
+
+            .letter {
+                width: 90%;
+                font-size: 1em;
+                transform: translateY(-120%) rotateX(180deg);
+            }
+
+            .envelope.open .letter {
+                transform: translateY(0) rotateX(180deg);
+            }
         }
     </style>
 </head>
 <body>
-    <div class="hearts"></div>
     <div class="container">
-        <h1>Untuk Yoi 💬</h1>
+        <h1>Untuk Yang Teristimewa 💬</h1>
         <p>Tekan button untuk suprise! 💖</p>
-        <button onclick="confirmCompliment()">💬 Tekan sini 10 💬</button>
-        <button id="reveal-button" onclick="revealMessage()" style="display: none;">💌 Surat untuk yang teristimewa 💌</button>
-        <p id="secret-message" class="hidden-message">Sebenarnya, saya suka awak, dari awal kita kenal sampai sekarang ❤️</p>
+        <button onclick="confirmCompliment()">💬 Tekan sini 10 kali je💬</button>
+        <button id="reveal-button" onclick="showEnvelope()" style="display: none;">💌 Surat untuk yang teristimewa 💌</button>
+        
+        <div id="envelope-wrapper" class="envelope-wrapper">
+            <div class="envelope" onclick="openEnvelope(this)">
+                <div class="envelope-front">
+                    💌
+                    <div class="flap"></div>
+                </div>
+                <div class="envelope-back"></div>
+                <div class="letter">
+                    Sebenarnya, saya suka awak, dari awal kita kenal sampai sekarang ❤️
+                </div>
+                <div class="click-hint">Click to open ✨</div>
+            </div>
+        </div>
+
         <div id="gif-container" class="gif-container">
             <img id="compliment-gif" src="" alt="Cute GIF">
         </div>
     </div>
 
     <script>
+        // Previous script remains the same
         const compliments = [
             "Awak comel lah!",
             "Hai, cantik!",
@@ -191,20 +282,6 @@
 
         let complimentCount = 0;
         let firstClick = true;
-
-        // Create floating hearts
-        function createHearts() {
-            const heartsContainer = document.querySelector('.hearts');
-            const heart = document.createElement('span');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
-            heartsContainer.appendChild(heart);
-            setTimeout(() => heart.remove(), 6000);
-        }
-
-        setInterval(createHearts, 300);
 
         function confirmCompliment() {
             if(firstClick) {
@@ -245,8 +322,14 @@
             }
         }
 
-        function revealMessage() {
-            document.getElementById("secret-message").style.display = "block";
+        function showEnvelope() {
+            document.getElementById("envelope-wrapper").style.display = "block";
+        }
+
+        function openEnvelope(envelope) {
+            if (!envelope.classList.contains('open')) {
+                envelope.classList.add('open');
+            }
         }
     </script>
 </body>
